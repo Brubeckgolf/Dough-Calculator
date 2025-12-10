@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pizza Dough with Poolish (Flexible Salt & Yeast)</title>
+  <style>
+    body { font-family: sans-serif; background:#111; color:#eee; padding:20px; }
+    .card { background:#222; padding:15px; border-radius:10px; margin-bottom:20px; }
+    label { display:block; margin-top:10px; }
+    input, select { width:100%; padding:6px; margin-top:4px; border-radius:6px; border:1px solid #444; background:#000; color:#eee; }
+    h2 { margin-top:0; }
+    table { width:100%; border-collapse: collapse; margin-top:8px; }
+    th, td { padding:8px 10px; border-bottom:1px solid #333; text-align:left; }
+    th { background:#333; color:#eee; }
+    tr:nth-child(even) td { background:#1a1a1a; }
+    button { margin-top:12px; padding:8px 12px; border:none; border-radius:6px; background:#5bb36a; color:#000; font-weight:bold; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h1>Pizza Dough Hydration Calculator (Poolish with Yeast + Honey)</h1>
+
+  <div class="card">
+    <h2>Inputs</h2>
+    <label>Number of pizzas <input type="number" id="numPizzas" value="4"></label>
+    <label>Dough ball weight (g) <input type="number" id="ballWeight" value="250"></label>
+    <label>Hydration (%) <input type="number" id="hydration" value="65"></label>
+
+    <label>Salt input type
+      <select id="saltMode">
+        <option value="percent" selected>Percentage of flour</option>
+        <option value="weight">Fixed grams</option>
+      </select>
+    </label>
+    <label>Salt (%) or g <input type="number" id="saltValue" value="2.2"></label>
+
+    <label>Yeast input type
+      <select id="yeastMode">
+        <option value="percent" selected>Percentage of flour</option>
+        <option value="weight">Fixed grams</option>
+      </select>
+    </label>
+    <label>Yeast (%) or g <input type="number" id="yeastValue" value="0.2"></label>
+
+    <label>Poolish flour % of total flour <input type="number" id="poolishPct" value="30"></label>
+    <button onclick="compute()">Calculate</button>
+  </div>
+
+  <div class="card results">
+    <h2>Total Dough</h2>
+    <table>
+      <tr><th>Ingredient</th><th>Amount</th></tr>
+      <tr><td>Total dough weight</td><td id="totalDough">—</td></tr>
+      <tr><td>Flour</td><td id="totalFlour">—</td></tr>
+      <tr><td>Water</td><td id="totalWater">—</td></tr>
+      <tr><td>Salt</td><td id="totalSalt">—</td></tr>
+      <tr><td>Yeast</td><td id="totalYeast">—</td></tr>
+      <tr><td>Honey</td><td id="totalHoney">—</td></tr>
+    </table>
+  </div>
+
+  <div class="card results">
+    <h2>Poolish Starter (50% hydration)</h2>
+    <table>
+      <tr><th>Ingredient</th><th>Amount</th></tr>
+      <tr><td>Flour</td><td id="poolishFlour">—</td></tr>
+      <tr><td>Water</td><td id="poolishWater">—</td></tr>
+      <tr><td>Yeast</td><td id="poolishYeast">—</td></tr>
+      <tr><td>Honey</td><td id="poolishHoney">—</td></tr>
+    </table>
+  </div>
+
+  <div class="card results">
+    <h2>Final Mix (after poolish)</h2>
+    <table>
+      <tr><th>Ingredient</th><th>Amount</th></tr>
+      <tr><td>Flour</td><td id="finalFlour">—</td></tr>
+      <tr><td>Water</td><td id="finalWater">—</td></tr>
+      <tr><td>Salt</td><td id="finalSalt">—</td></tr>
+      <tr><td>Yeast</td><td>0 g</td></tr>
+      <tr><td>Honey</td><td>0 g</td></tr>
+    </table>
+  </div>
+
+<script>
+function g(x){return Math.round(x);}
+function compute(){
+  const numPizzas = +document.getElementById('numPizzas').value;
+  const ballWeight = +document.getElementById('ballWeight').value;
+  const hydration = +document.getElementById('hydration').value/100;
+  const poolishPct = +document.getElementById('poolishPct').value/100;
+
+  const saltMode = document.getElementById('saltMode').value;
+  const saltValue = +document.getElementById('saltValue').value;
+  const yeastMode = document.getElementById('yeastMode').value;
+  const yeastValue = +document.getElementById('yeastValue').value;
+
+  // First compute flour ignoring salt/yeast weights
+  // Approximate flour from hydration only
+  // We'll refine by iterative approach: assume flour = totalDough / (1+hydration)
+  const totalDough = numPizzas*ballWeight;
+  let totalFlour = totalDough/(1+hydration); 
+  let totalWater = hydration*totalFlour;
+
+  // Salt
+  let totalSalt = (saltMode==="percent") ? (saltValue/100)*totalFlour : saltValue;
+
+  // Yeast
+  let totalYeast = (yeastMode==="percent") ? (yeastValue/100)*totalFlour : yeastValue;
+  let totalHoney = totalYeast;
+
+  // Adjust flour if fixed weights shift total
+  const adjustedTotal = totalFlour+totalWater+totalSalt+totalYeast;
+  const scale = totalDough/adjustedTotal;
+  totalFlour*=scale; totalWater*=scale; totalSalt*=scale; totalYeast*=scale; totalHoney*=scale;
+
+  // Poolish
+  const poolishFlour = totalFlour*poolishPct;
+  const poolishWater = poolishFlour; // 50% hydration
+  const poolishYeast = totalYeast;   // all yeast
+  const poolishHoney = totalHoney;   // all honey
+
+  // Final mix
+  const finalFlour = totalFlour - poolishFlour;
+  const finalWater = totalWater - poolishWater;
+  const finalSalt = totalSalt;
+
+  // Update UI
+  document.getElementById('totalDough').textContent=g(totalDough)+' g';
+  document.getElementById('totalFlour').textContent=g(totalFlour)+' g';
+  document.getElementById('totalWater').textContent=g(totalWater)+' g';
+  document.getElementById('totalSalt').textContent=g(totalSalt)+' g';
+  document.getElementById('totalYeast').textContent=g(totalYeast)+' g';
+  document.getElementById('totalHoney').textContent=g(totalHoney)+' g';
+
+  document.getElementById('poolishFlour').textContent=g(poolishFlour)+' g';
+  document.getElementById('poolishWater').textContent=g(poolishWater)+' g';
+  document.getElementById('poolishYeast').textContent=g(poolishYeast)+' g';
+  document.getElementById('poolishHoney').textContent=g(poolishHoney)+' g';
+
+  document.getElementById('finalFlour').textContent=g(finalFlour)+' g';
+  document.getElementById('finalWater').textContent=g(finalWater)+' g';
+  document.getElementById('finalSalt').textContent=g(finalSalt)+' g';
+}
+</script>
+</body>
+</html>
