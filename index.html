@@ -14,6 +14,46 @@
     th { background:#333; color:#eee; }
     tr:nth-child(even) td { background:#1a1a1a; }
     button { margin-top:12px; padding:8px 12px; border:none; border-radius:6px; background:#5bb36a; color:#000; font-weight:bold; cursor:pointer; }
+/* General mobile-friendly adjustments */
+body {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* Inputs and buttons: bigger touch area */
+input, select, button {
+  font-size: 1rem;
+  padding: 12px;
+}
+
+/* Tables: responsive */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+th, td {
+  padding: 10px;
+}
+@media (max-width: 600px) {
+  /* Stack inputs vertically */
+  .card label {
+    margin-top: 14px;
+  }
+  /* Tables: allow horizontal scroll if too wide */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  /* Headings slightly smaller */
+  h1 {
+    font-size: 1.4rem;
+  }
+  h2 {
+    font-size: 1.2rem;
+  }
+}
   </style>
 </head>
 <body>
