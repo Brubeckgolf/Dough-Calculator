@@ -16,25 +16,28 @@
   }
 
   h1 {
-    font-size:1.6rem;
+    font-size:1.8rem;
     text-align:center;
     margin-bottom:20px;
   }
 
   /* FULL-WIDTH LABEL FIX */
   label {
-    display:block !important;
-    width:100% !important;
-    max-width:100% !important;
-    font-size:1.4rem;
-    font-weight:600;
-    margin:24px 0 8px 0;
+    display:block;
+    width:100%;
+    max-width:100%;
+    margin:28px 0 10px 0;
   }
 
-  /* Ensure everything inside the label also fills width */
-  label > * {
-    width:100% !important;
+  /* Label text styling */
+  label span {
     display:block;
+    width:100%;
+    font-size:1.6rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:8px;
   }
 
   /* Input rows with + / - buttons */
@@ -42,7 +45,7 @@
     display:flex;
     align-items:center;
     gap:12px;
-    margin-top:8px;
+    width:100%;
   }
 
   .input-row input {
@@ -69,7 +72,6 @@
   select {
     width:100%;
     padding:14px;
-    margin-top:8px;
     border-radius:10px;
     border:1px solid #444;
     background:#000;
@@ -160,7 +162,9 @@
 
 <!-- INPUTS -->
 <div>
-  <label>Number of pizzas
+
+  <label>
+    <span>Number of pizzas</span>
     <div class="input-row">
       <button class="pm" onclick="adjust('numPizzas', -1)">−</button>
       <input type="number" id="numPizzas" value="4">
@@ -168,7 +172,8 @@
     </div>
   </label>
 
-  <label>Dough ball weight (g)
+  <label>
+    <span>Dough ball weight (g)</span>
     <div class="input-row">
       <button class="pm" onclick="adjust('ballWeight', -10)">−</button>
       <input type="number" id="ballWeight" value="250">
@@ -176,22 +181,25 @@
     </div>
   </label>
 
-  <label>Hydration (%)
+  <label>
+    <span>Hydration (%)</span>
     <div class="input-row">
       <button class="pm" onclick="adjust('hydration', -1)">−</button>
-      <input type="number" id="hydration' value="65">
+      <input type="number" id="hydration" value="65">
       <button class="pm" onclick="adjust('hydration', 1)">+</button>
     </div>
   </label>
 
-  <label>Salt input type
+  <label>
+    <span>Salt input type</span>
     <select id="saltMode">
       <option value="percent" selected>Percentage of flour</option>
       <option value="weight">Fixed grams</option>
     </select>
   </label>
 
-  <label>Salt (%) or g
+  <label>
+    <span>Salt (%) or g</span>
     <div class="input-row">
       <button class="pm" onclick="adjust('saltValue', -0.1)">−</button>
       <input type="number" id="saltValue" value="2.2">
@@ -199,14 +207,16 @@
     </div>
   </label>
 
-  <label>Yeast input type
+  <label>
+    <span>Yeast input type</span>
     <select id="yeastMode">
       <option value="percent" selected>Percentage of flour</option>
       <option value="weight">Fixed grams</option>
     </select>
   </label>
 
-  <label>Yeast (%) or g
+  <label>
+    <span>Yeast (%) or g</span>
     <div class="input-row">
       <button class="pm" onclick="adjust('yeastValue', -0.1)">−</button>
       <input type="number" id="yeastValue" value="0.2">
@@ -214,7 +224,8 @@
     </div>
   </label>
 
-  <label>Poolish flour % of total flour
+  <label>
+    <span>Poolish flour % of total flour</span>
     <div class="input-row">
       <button class="pm" onclick="adjust('poolishPct', -1)">−</button>
       <input type="number" id="poolishPct" value="30">
