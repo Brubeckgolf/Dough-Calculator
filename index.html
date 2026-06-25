@@ -21,13 +21,20 @@
     margin-bottom:20px;
   }
 
-  /* Full-width labels */
+  /* FULL-WIDTH LABEL FIX */
   label {
-    display:block;
-    width:100%;
-    font-size:1.3rem;
-    margin:22px 0 6px 0;
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    font-size:1.4rem;
     font-weight:600;
+    margin:24px 0 8px 0;
+  }
+
+  /* Ensure everything inside the label also fills width */
+  label > * {
+    width:100% !important;
+    display:block;
   }
 
   /* Input rows with + / - buttons */
@@ -172,7 +179,7 @@
   <label>Hydration (%)
     <div class="input-row">
       <button class="pm" onclick="adjust('hydration', -1)">−</button>
-      <input type="number" id="hydration" value="65">
+      <input type="number" id="hydration' value="65">
       <button class="pm" onclick="adjust('hydration', 1)">+</button>
     </div>
   </label>
