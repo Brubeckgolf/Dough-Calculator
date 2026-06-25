@@ -11,95 +11,135 @@
     color:#eee;
     padding:16px;
     margin:0;
+    font-size:20px;
+    line-height:1.5;
   }
 
   h1 {
-    font-size:1.5rem;
-    margin-bottom:16px;
+    font-size:1.6rem;
     text-align:center;
+    margin-bottom:20px;
   }
 
-  /* --- Cards --- */
-  .card {
-    background:#1c1c1c;
-    padding:16px;
-    border-radius:12px;
-    margin-bottom:16px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.4);
-  }
-
-  /* --- Collapsible sections --- */
-  .collapsible {
-    cursor:pointer;
-    padding:12px 0;
-    font-size:1.2rem;
-    font-weight:bold;
+  /* Input rows with + / - buttons */
+  .input-row {
     display:flex;
-    justify-content:space-between;
     align-items:center;
+    gap:12px;
+    margin-top:8px;
   }
 
-  .collapsible span {
-    transition:transform 0.25s;
-  }
-
-  .content {
-    max-height:0;
-    overflow:hidden;
-    transition:max-height 0.35s ease;
-  }
-
-  /* --- Inputs --- */
-  label {
-    display:block;
-    margin-top:14px;
-    font-size:0.95rem;
-  }
-
-  input, select {
-    width:100%;
-    padding:12px;
-    margin-top:6px;
-    border-radius:8px;
+  .input-row input {
+    flex:1;
+    font-size:1.4rem;
+    padding:14px;
+    text-align:center;
+    border-radius:10px;
     border:1px solid #444;
     background:#000;
     color:#eee;
-    font-size:1rem;
   }
 
-  button {
-    width:100%;
-    margin-top:18px;
-    padding:14px;
+  .pm {
+    width:52px;
+    height:52px;
+    font-size:1.8rem;
+    border-radius:12px;
     border:none;
-    border-radius:10px;
-    background:#5bb36a;
-    color:#000;
-    font-weight:bold;
+    background:#333;
+    color:#eee;
+  }
+
+  label {
+    display:block;
+    margin-top:18px;
     font-size:1.1rem;
   }
 
-  /* --- Tables --- */
+  select {
+    width:100%;
+    padding:14px;
+    margin-top:8px;
+    border-radius:10px;
+    border:1px solid #444;
+    background:#000;
+    color:#eee;
+    font-size:1.2rem;
+  }
+
+  button.calculate {
+    width:100%;
+    padding:16px;
+    margin-top:24px;
+    border:none;
+    border-radius:12px;
+    background:#5bb36a;
+    color:#000;
+    font-size:1.3rem;
+    font-weight:bold;
+  }
+
+  /* Buttons that open panels */
+  .open-panel-btn {
+    width:100%;
+    padding:18px;
+    margin-top:16px;
+    border-radius:12px;
+    border:none;
+    background:#222;
+    color:#eee;
+    font-size:1.3rem;
+    text-align:left;
+  }
+
+  /* Full-screen slide-up panels */
+  .panel {
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:-100%;
+    height:100%;
+    background:#111;
+    padding:28px;
+    border-radius:20px 20px 0 0;
+    box-shadow:0 -4px 20px rgba(0,0,0,0.6);
+    transition:bottom 0.35s ease;
+    overflow-y:auto;
+    z-index:999;
+  }
+
+  .panel.open {
+    bottom:0;
+  }
+
+  .panel-close {
+    text-align:center;
+    margin-bottom:20px;
+    font-size:1.3rem;
+    opacity:0.7;
+    cursor:pointer;
+  }
+
+  .panel h2 {
+    text-align:center;
+    font-size:1.8rem;
+    margin-bottom:20px;
+  }
+
+  /* Ingredient table */
   table {
     width:100%;
     border-collapse:collapse;
-    margin-top:10px;
-    font-size:0.95rem;
+    font-size:1.4rem;
   }
 
   th, td {
-    padding:10px 6px;
+    padding:16px 10px;
     border-bottom:1px solid #333;
   }
 
   th {
     background:#333;
-  }
-
-  @media (max-width:600px) {
-    h1 { font-size:1.3rem; }
-    .card { padding:14px; }
-    table { font-size:0.9rem; }
   }
 </style>
 </head>
@@ -108,20 +148,30 @@
 
 <h1>Pizza Dough Hydration Calculator</h1>
 
-<!-- INPUT CARD -->
-<div class="card">
-  <h2 style="margin-top:0;">Inputs</h2>
-
+<!-- INPUTS -->
+<div>
   <label>Number of pizzas
-    <input type="number" id="numPizzas" value="4">
+    <div class="input-row">
+      <button class="pm" onclick="adjust('numPizzas', -1)">−</button>
+      <input type="number" id="numPizzas" value="4">
+      <button class="pm" onclick="adjust('numPizzas', 1)">+</button>
+    </div>
   </label>
 
   <label>Dough ball weight (g)
-    <input type="number" id="ballWeight" value="250">
+    <div class="input-row">
+      <button class="pm" onclick="adjust('ballWeight', -10)">−</button>
+      <input type="number" id="ballWeight" value="250">
+      <button class="pm" onclick="adjust('ballWeight', 10)">+</button>
+    </div>
   </label>
 
   <label>Hydration (%)
-    <input type="number" id="hydration" value="65">
+    <div class="input-row">
+      <button class="pm" onclick="adjust('hydration', -1)">−</button>
+      <input type="number" id="hydration" value="65">
+      <button class="pm" onclick="adjust('hydration', 1)">+</button>
+    </div>
   </label>
 
   <label>Salt input type
@@ -132,7 +182,11 @@
   </label>
 
   <label>Salt (%) or g
-    <input type="number" id="saltValue" value="2.2">
+    <div class="input-row">
+      <button class="pm" onclick="adjust('saltValue', -0.1)">−</button>
+      <input type="number" id="saltValue" value="2.2">
+      <button class="pm" onclick="adjust('saltValue', 0.1)">+</button>
+    </div>
   </label>
 
   <label>Yeast input type
@@ -143,77 +197,85 @@
   </label>
 
   <label>Yeast (%) or g
-    <input type="number" id="yeastValue" value="0.2">
+    <div class="input-row">
+      <button class="pm" onclick="adjust('yeastValue', -0.1)">−</button>
+      <input type="number" id="yeastValue" value="0.2">
+      <button class="pm" onclick="adjust('yeastValue', 0.1)">+</button>
+    </div>
   </label>
 
   <label>Poolish flour % of total flour
-    <input type="number" id="poolishPct" value="30">
+    <div class="input-row">
+      <button class="pm" onclick="adjust('poolishPct', -1)">−</button>
+      <input type="number" id="poolishPct" value="30">
+      <button class="pm" onclick="adjust('poolishPct', 1)">+</button>
+    </div>
   </label>
 
-  <button onclick="compute()">Calculate</button>
+  <button class="calculate" onclick="compute()">Calculate</button>
 </div>
 
-<!-- RESULT CARDS (COLLAPSIBLE) -->
-<div class="card">
-  <div class="collapsible" onclick="toggleSection(this)">
-    Total Dough <span>▼</span>
-  </div>
-  <div class="content">
-    <table>
-      <tr><th>Ingredient</th><th>Amount</th></tr>
-      <tr><td>Total dough weight</td><td id="totalDough">—</td></tr>
-      <tr><td>Flour</td><td id="totalFlour">—</td></tr>
-      <tr><td>Water</td><td id="totalWater">—</td></tr>
-      <tr><td>Salt</td><td id="totalSalt">—</td></tr>
-      <tr><td>Yeast</td><td id="totalYeast">—</td></tr>
-      <tr><td>Honey</td><td id="totalHoney">—</td></tr>
-    </table>
-  </div>
+<!-- PANEL BUTTONS -->
+<button class="open-panel-btn" onclick="openPanel('panelTotal')">Total Dough</button>
+<button class="open-panel-btn" onclick="openPanel('panelPoolish')">Poolish Starter</button>
+<button class="open-panel-btn" onclick="openPanel('panelFinal')">Final Mix</button>
+
+<!-- PANELS -->
+<div id="panelTotal" class="panel">
+  <div class="panel-close" onclick="closePanel('panelTotal')">Close ✕</div>
+  <h2>Total Dough</h2>
+  <table>
+    <tr><th>Ingredient</th><th>Amount</th></tr>
+    <tr><td>Total dough weight</td><td id="totalDough">—</td></tr>
+    <tr><td>Flour</td><td id="totalFlour">—</td></tr>
+    <tr><td>Water</td><td id="totalWater">—</td></tr>
+    <tr><td>Salt</td><td id="totalSalt">—</td></tr>
+    <tr><td>Yeast</td><td id="totalYeast">—</td></tr>
+    <tr><td>Honey</td><td id="totalHoney">—</td></tr>
+  </table>
 </div>
 
-<div class="card">
-  <div class="collapsible" onclick="toggleSection(this)">
-    Poolish Starter (50% hydration) <span>▼</span>
-  </div>
-  <div class="content">
-    <table>
-      <tr><th>Ingredient</th><th>Amount</th></tr>
-      <tr><td>Flour</td><td id="poolishFlour">—</td></tr>
-      <tr><td>Water</td><td id="poolishWater">—</td></tr>
-      <tr><td>Yeast</td><td id="poolishYeast">—</td></tr>
-      <tr><td>Honey</td><td id="poolishHoney">—</td></tr>
-    </table>
-  </div>
+<div id="panelPoolish" class="panel">
+  <div class="panel-close" onclick="closePanel('panelPoolish')">Close ✕</div>
+  <h2>Poolish Starter</h2>
+  <table>
+    <tr><th>Ingredient</th><th>Amount</th></tr>
+    <tr><td>Flour</td><td id="poolishFlour">—</td></tr>
+    <tr><td>Water</td><td id="poolishWater">—</td></tr>
+    <tr><td>Yeast</td><td id="poolishYeast">—</td></tr>
+    <tr><td>Honey</td><td id="poolishHoney">—</td></tr>
+  </table>
 </div>
 
-<div class="card">
-  <div class="collapsible" onclick="toggleSection(this)">
-    Final Mix <span>▼</span>
-  </div>
-  <div class="content">
-    <table>
-      <tr><th>Ingredient</th><th>Amount</th></tr>
-      <tr><td>Flour</td><td id="finalFlour">—</td></tr>
-      <tr><td>Water</td><td id="finalWater">—</td></tr>
-      <tr><td>Salt</td><td id="finalSalt">—</td></tr>
-      <tr><td>Yeast</td><td>0 g</td></tr>
-      <tr><td>Honey</td><td>0 g</td></tr>
-    </table>
-  </div>
+<div id="panelFinal" class="panel">
+  <div class="panel-close" onclick="closePanel('panelFinal')">Close ✕</div>
+  <h2>Final Mix</h2>
+  <table>
+    <tr><th>Ingredient</th><th>Amount</th></tr>
+    <tr><td>Flour</td><td id="finalFlour">—</td></tr>
+    <tr><td>Water</td><td id="finalWater">—</td></tr>
+    <tr><td>Salt</td><td id="finalSalt">—</td></tr>
+    <tr><td>Yeast</td><td>0 g</td></tr>
+    <tr><td>Honey</td><td>0 g</td></tr>
+  </table>
 </div>
 
 <script>
-function toggleSection(el){
-  const content = el.nextElementSibling;
-  const arrow = el.querySelector("span");
+function openPanel(id){
+  document.getElementById(id).classList.add("open");
+}
 
-  if(content.style.maxHeight){
-    content.style.maxHeight = null;
-    arrow.style.transform = "rotate(0deg)";
-  } else {
-    content.style.maxHeight = content.scrollHeight + "px";
-    arrow.style.transform = "rotate(180deg)";
-  }
+function closePanel(id){
+  document.getElementById(id).classList.remove("open");
+}
+
+function adjust(id, delta){
+  const el = document.getElementById(id);
+  let v = Number(el.value);
+  v += delta;
+  if(v < 0) v = 0;
+  el.value = v;
+  compute();
 }
 
 function g(x){return Math.round(x);}
